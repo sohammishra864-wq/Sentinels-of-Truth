@@ -1,7 +1,7 @@
 import sqlite3
 import json
-from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
+
 
 class SQLite_manager:
     def __init__(self , conn: sqlite3.Connection):
@@ -17,7 +17,7 @@ class SQLite_manager:
             return self.cursor.lastrowid # primary key
         except sqlite3.IntegrityError: # if unique not satisfied i mean need to change it later learrnign about any other method
             return ValueError("this claim already exists")
-    def check_existing_claim(self, text: str) -> Optional[Dict[str, Optional[str]]]:
+    def check_existing_claim(self, text: str) -> Optional[Dict[str, Any]]:
         self.cursor.execute(""" SELECT * FROM claims WHERE claim_text = ? """, (text,))
         # self.conn.commit() dont commit here directly as there might raise some issue
         row = self.cursor.fetchone() # keep cursor in execute than con i had an error that why misunderstood it
