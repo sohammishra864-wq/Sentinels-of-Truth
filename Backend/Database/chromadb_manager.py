@@ -26,7 +26,6 @@ class Chromamanager:
             n_results=n_results,
             include=["metadatas", "distances"]
         )
-
         formatted = []
         if results["ids"] and results["ids"][0]:
             for i, claim_id in enumerate(results["ids"][0]):
