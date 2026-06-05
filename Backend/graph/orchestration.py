@@ -18,7 +18,7 @@ class Workflow:
         tavily_key = os.getenv("TAVILY_API_KEY", "")
         if not tavily_key:
             logger.warning("Tavily API key is missing from environment variables!")
-            # scout
+            # scout librarian error fixed now api one and db
         self.scout = ScoutAgent(tavily_api_key=tavily_key)
         self.librarian = LibrarianAgent(db_conn=db_conn, chroma_collection=chroma_collection)
         self.graph = self._build_graph()
