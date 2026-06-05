@@ -1,7 +1,7 @@
 from typing import TypedDict
 import os
-from Backend.agents.scout import ScoutAgent
-from Backend.agents.librarian import LibrarianAgent
+from backend.agents.scout import ScoutAgent
+from backend.agents.librarian import LibrarianAgent
 from langgraph.graph import StateGraph, END
 import logging
 
