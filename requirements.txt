@@ -7,3 +7,5 @@ sentence-transformers
 langgraph
 requests
 python-dotenv
+langchain-groq
+langchain-core
