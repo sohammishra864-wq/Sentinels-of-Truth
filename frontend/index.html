@@ -2,198 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentinels of Truth</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            padding: 40px 20px;
-        }
-
-        .container {
+            font-family: Arial, sans-serif;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
         }
-
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 30px;
         }
-
-        .input-box {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
         }
-
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            height: 80px;
+            padding: 10px;
             font-size: 16px;
-            resize: vertical;
-            min-height: 80px;
-            font-family: inherit;
+            border: 1px solid #999;
         }
-
         button {
-            margin-top: 15px;
-            padding: 12px 30px;
-            background: #2563eb;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #0066cc;
             color: white;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
             cursor: pointer;
         }
-
         button:hover {
-            background: #1d4ed8;
+            background: #0052a3;
         }
-
         button:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
+            background: #999;
         }
-
         .result {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             display: none;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 20px;
         }
-
         .result.show {
             display: block;
         }
-
-        .badge {
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
             display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
+            margin: 5px 5px 5px 0;
         }
-
-        .badge.real {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .badge.fake {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge.uncertain {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge.insert {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .badge.flag {
-            background: #fce7f3;
-            color: #9d174d;
-        }
-
-        .badge.discard {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        .badge.local {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .info-row {
+        .status.real { background: #d4edda; color: #155724; }
+        .status.fake { background: #f8d7da; color: #721c24; }
+        .status.uncertain { background: #fff3cd; color: #856404; }
+        .status.insert { background: #cce5ff; color: #004085; }
+        .status.flag { background: #f8d7da; color: #721c24; }
+        .status.discard { background: #e2e3e5; color: #383d41; }
+        .status.neutral { background: #e2e3e5; color: #333; }
+        .row {
             margin: 10px 0;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
         }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
         .label {
-            font-weight: 600;
-            color: #555;
+            font-weight: bold;
             display: inline-block;
-            width: 120px;
+            width: 100px;
         }
-
-        .value {
-            color: #333;
+        .reasoning-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f4f6f9;
+            border-left: 4px solid #0066cc;
         }
-
+        .sources-box {
+            margin-top: 15px;
+        }
+        .sources-box ul {
+            padding-left: 20px;
+            font-size: 14px;
+            margin: 5px 0 0 0;
+        }
+        .sources-box a {
+            color: #0052a3;
+        }
         .error {
-            color: #dc2626;
-            margin-top: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            color: #666;
+            color: red;
             margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Sentinels of Truth</h1>
+    <h1>Sentinels of Truth</h1>
 
-        <div class="input-box">
-            <textarea id="claimInput" placeholder="Enter a claim to verify..."></textarea>
-            <button id="verifyBtn" onclick="verifyClaim()">Verify Claim</button>
-            <div class="loading" id="loading" style="display: none;">Checking...</div>
+    <div class="box">
+        <textarea id="claimInput" placeholder="Enter a claim to verify..."></textarea>
+        <br>
+        <button id="verifyBtn" onclick="verifyClaim()">Verify Claim</button>
+        <div id="loading" style="display:none; margin-top:10px;">Checking...</div>
+    </div>
+
+    <div class="result" id="result">
+        <div id="badges"></div>
+
+        <div class="row"><span class="label">Claim:</span> <span id="claimText"></span></div>
+
+        <div class="reasoning-box">
+            <span class="label">Analysis:</span>
+            <p id="reasoningText" style="margin: 5px 0 0 0; line-height: 1.5; color: #444;"></p>
         </div>
 
-        <div class="result" id="result">
-            <div id="badges"></div>
-            <div class="info-row">
-                <span class="label">Claim:</span>
-                <span class="value" id="claimText"></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Verdict:</span>
-                <span class="value" id="verdict"></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Confidence:</span>
-                <span class="value" id="confidence"></span>
-            </div>
-            <div class="info-row">
-                <span class="label">Action:</span>
-                <span class="value" id="action"></span>
-            </div>
-            <div class="info-row" id="methodRow" style="display: none;">
-                <span class="label">Method:</span>
-                <span class="value" id="method"></span>
-            </div>
-            <div class="error" id="error"></div>
+        <div class="sources-box">
+            <span class="label">Sources:</span>
+            <ul id="sourcesList"></ul>
         </div>
+
+        <div class="row"><span class="label">Action:</span> <span id="action"></span></div>
+        <div class="error" id="error"></div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:8000';
+        const API_URL = 'http://localhost:8001';
 
         async function verifyClaim() {
             const input = document.getElementById('claimInput');
@@ -209,57 +141,67 @@
             result.classList.remove('show');
 
             try {
-                const response = await fetch(`${API_URL}/verify`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ claim: claim })
-                });
+                const controller = new AbortController();
 
+const timeout = setTimeout(() => controller.abort(), 60000);
+const response = await fetch(API_URL + '/verify', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({claim: claim}),
+    signal: controller.signal
+});
+clearTimeout(timeout);
                 const data = await response.json();
                 showResult(data);
             } catch (err) {
-                showResult({ error: 'Failed to connect to backend. Is it running?' });
-            } finally {
-                btn.disabled = false;
-                loading.style.display = 'none';
-            }
-        }
+    if (err.name === 'AbortError') {
+        showResult({error: 'Request timed out after 60 seconds'});
+    } else {
+        showResult({error: 'Backend not running or unreachable'});
+    }
+}
 
         function showResult(data) {
             const result = document.getElementById('result');
             const badges = document.getElementById('badges');
 
             document.getElementById('claimText').textContent = data.claim || '';
-            document.getElementById('verdict').textContent = data.verdict || 'N/A';
-            document.getElementById('confidence').textContent = data.confidence ? (data.confidence * 100).toFixed(1) + '%' : 'N/A';
             document.getElementById('action').textContent = data.action || 'N/A';
             document.getElementById('error').textContent = data.error || '';
+            document.getElementById('reasoningText').textContent = data.reasoning || 'No analysis available.';
 
 
-            let badgeHtml = '';
+            const sourcesList = document.getElementById('sourcesList');
+            sourcesList.innerHTML = '';
+            if (data.sources && data.sources.length > 0) {
+                data.sources.forEach(function(url) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.textContent = url;
+                    li.appendChild(a);
+                    sourcesList.appendChild(li);
+                });
+            } else {
+                sourcesList.innerHTML = '<li style="color: #777;">No sources found.</li>';
+            }
+
+
+            let html = '';
             if (data.verdict) {
-                badgeHtml += `<span class="badge ${data.verdict.toLowerCase()}">${data.verdict}</span>`;
+                html += '<span class="status ' + data.verdict.toLowerCase() + '">' + data.verdict + '</span>';
             }
             if (data.action) {
-                badgeHtml += `<span class="badge ${data.action.toLowerCase()}">${data.action}</span>`;
+                html += '<span class="status ' + data.action.toLowerCase() + '">' + data.action + '</span>';
             }
-            if (data.verification_method === 'LOCAL_RULES') {
-                badgeHtml += `<span class="badge local">Local Rules</span>`;
-            } else if (data.verification_method === 'LIVE_API') {
-                badgeHtml += `<span class="badge insert">Live API</span>`;
+            if (typeof data.confidence === 'number') {
+                html += '<span class="status neutral">' + (data.confidence * 100).toFixed(1) + '%</span>';
             }
-            badges.innerHTML = badgeHtml;
-
-
-            if (data.verification_method) {
-                document.getElementById('methodRow').style.display = 'block';
-                document.getElementById('method').textContent = data.verification_method;
-            } else {
-                document.getElementById('methodRow').style.display = 'none';
-            }
+            badges.innerHTML = html;
 
             result.classList.add('show');
-        }
+        }}
     </script>
 </body>
 </html>
