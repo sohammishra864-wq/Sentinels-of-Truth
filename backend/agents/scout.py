@@ -1,7 +1,7 @@
 from typing import TypedDict
 from pydantic import BaseModel, Field
 import requests
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 
 class VerificationReport(TypedDict):
@@ -18,13 +18,13 @@ class ScoutAgent:
     def __init__(self, tavily_api_key: str):
         self.tavily_api_key = tavily_api_key
         self.search_url = "https://api.tavily.com/search"
-        self.llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
+        self.llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
 
     def search(self, query: str) -> dict: # inputs the query text
         payload = {
             "api_key": self.tavily_api_key,
             "query": query,
-            "search_depth": "basic",
+            "search_depth": "advanced", # for latest things
             "max_results": 4
         }
         resp = requests.post(self.search_url, json=payload, timeout=30) # i choose 30 but we can shorten though 30 was fine
@@ -35,7 +35,7 @@ class ScoutAgent:
         search_data = self.search(claim)
         source = [r.get("url", "") for r in search_data.get("results", []) if r.get("url")]
         context = "\n".join([f"Source Content : {r.get( 'content')}" for r in search_data.get("results", [])])
-        prompt = ChatPromptTemplate.from_messages([
+        prompt = ChatPromptTemplate.from_messages([ # Prompt from LLM and for LLM
             ("system", (
                 "You are an expert fact-checking agent. Analyze the provided web search context "
                 "to determine if the user's claim is REAL, FAKE, or UNCERTAIN.\n\n"
@@ -49,5 +49,6 @@ class ScoutAgent:
         return {
             "verdict": analysis.verdict.upper(),
             "evidence": source,
-            "confidence": analysis.confidence
+            "confidence": analysis.confidence,
+            "reasoning": analysis.reasoning
         }
