@@ -50,7 +50,7 @@ def verify_claim(req: ClaimRequest):
             "confidence": report.get("confidence"),
             "action": result.get("final_action"),
             "reasoning": report.get("reasoning","No explanation was provided by agents"),
-            "sources": report.get("sources", []),
+            "sources": report.get("evidences", []),
             "error": result.get("error")
         }
     except Exception as e:
